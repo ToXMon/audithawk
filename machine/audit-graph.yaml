@@ -1,0 +1,67 @@
+# AuditHawk machine definition — canonical pipeline graph (v1)
+# Source of truth: docs/MACHINE_ARCHITECTURE.md
+# Node types: tool | llm | gate | human | rag
+# Every llm node carries a prompt_id resolving into ml/prompts/ (versioned).
+
+graph: audithawk-v1
+entry: ingest
+
+nodes:
+  ingest:
+    type: tool
+    tool: fetch_bounty + git_clone        # or Cyfrin/audit-repo-cloner for contest scaffolding
+    outputs: [scope.json, repo/]
+  scope:
+    type: llm
+    prompt_id: scope-parse
+    outputs: [scope.json, checklist-categories[]]
+  static_scan:
+    type: tool
+    tool: slither_scan | aderyn_scan      # EVM vs Solana/Rust
+    outputs: [candidate-surfaces]
+  hypothesize:
+    type: llm
+    prompt_id: hypothesis
+    loop: { max: 5, per: checklist-category }
+    requires: [candidate-surfaces, checklist-categories]
+  ground:
+    type: rag
+    tool: rag_search_findings
+    policy: citation-required             # a hypothesis w/o corpus neighbors is 'speculative'
+  write_poc:
+    type: llm
+    prompt_id: poc-engineer
+    inputs: [hypothesis, ground-citations, repo/]
+  run_poc:
+    type: gate
+    tool: forge_test                      # inside foundry container; anvil fork for state
+    on_fail:
+      revise: write_poc
+      max_attempts: 5
+      then: drop_hypothesis
+  drop_hypothesis:
+    type: tool
+    tool: log-and-clear                   # logged to evals/, never reported
+  draft_report:
+    type: llm
+    prompt_id: report-writer
+    format: cyfrin/report-generator-template   # markdown findings -> LaTeX -> PDF
+    proven_only: true                     # refuses findings whose PoC didn't run green
+  human_review:
+    type: human
+    channel: telegram + ui
+    policy: human-submits                 # the agent never submits; full stop
+
+edges:
+  - ingest -> scope -> static_scan -> hypothesize -> ground -> write_poc -> run_poc
+  - run_poc(green) -> draft_report -> human_review
+  - run_poc(red, attempts<5) -> write_poc
+  - run_poc(red, attempts>=5) -> drop_hypothesis -> hypothesize
+
+parallelizable:
+  - hypothesize          # fan out per checklist category — the L3 seam (see MACHINE_ARCHITECTURE.md §4)
+
+invariants:
+  - human_review is unreachable from any path that skips run_poc(green)
+  - every reported finding carries corpus citations + green forge output
+  - all LLM calls route through Forge ProviderRegistry (cheap open-weight default)

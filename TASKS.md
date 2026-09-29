@@ -24,8 +24,10 @@ Tick with `[x]`, note the commit hash.
 - [ ] `forge_test` tool executes a sample PoC inside the container and returns PROVEN true/false correctly (test both paths with a deliberately-failing PoC)
 **Verify:** `bash evals/verify/m3.sh`
 
-## M4 — Agent wired into Forge (agent)
-- [ ] `audithawkAgent()` + audit tools registered in Forge; `forge --help`/agent list shows audithawk
+## M4 — Agent wired into Forge, machine graph implemented (agent)
+- [ ] `audithawkAgent()` + audit tools registered in Forge; agent list shows audithawk
+- [ ] `machine/audit-graph.yaml` implemented: each node is a function with the declared type (tool/llm/gate/human/rag); llm nodes load prompts by prompt_id from `ml/prompts/`
+- [ ] Graph invariants hold: human_review unreachable without run_poc(green); every finding carries citations + green forge output
 - [ ] End-to-end on a toy repo: agent runs slither_scan → rag_search_findings → writes a foundry PoC → forge_test marks it proven (toy repo: a contract with a known reentrancy bug)
 **Verify:** session transcript + `PROVEN: true` in workspace; commit the transcript to `evals/transcripts/`
 
@@ -33,7 +35,8 @@ Tick with `[x]`, note the commit hash.
 - [ ] One held-out contest ingested (report NOT in RAG index)
 - [ ] Agent first-pass run logged to `evals/transcripts/`; findings-rediscovered + PoC-validity numbers written to `evals/results.json`
 - [ ] Numbers committed with the prompt version used
-**Verify:** `python evals/score.py evals/results.json` prints the metric table
+- [ ] `ml/optimize_prompts.py --node <id> --evals evals/results.json --dry-run` runs against the baseline (reward fn + version archiving work)
+**Verify:** `python evals/score.py evals/results.json` prints the metric table; prompt version archive exists under `ml/prompts/<id>/versions/`
 
 ## M6 — Remote build box (infra, needs human: funded Akash/Brev)
 - [ ] Forge server + scanner deployed to Akash (reuse forge `deploy/`)
