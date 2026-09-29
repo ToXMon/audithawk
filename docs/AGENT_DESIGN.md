@@ -67,8 +67,25 @@ What we take, and where it lives in Forge:
    corpus neighbors ("this matches maia_H-04 gas-accounting pattern") —
    citations force the model to be specific and give you something to verify.
 3. **Proof** (deterministic gate): a hypothesis isn't a finding until a Foundry
-   test executes green in the container. The tool, not the prompt, is the
-   source of truth for `proven: true`.
+   test executes green in the container — `forge test` against an **anvil fork**
+   of the relevant chain state for realistic conditions. The tool, not the
+   prompt, is the source of truth for `proven: true`.
+
+### Verification stack — what proves what (read this before wiring tools)
+
+| Claim | Proven by | NOT proven by |
+|---|---|---|
+| "The PoC exploits the bug" | `forge test` green in the foundry container (deterministic, replayable) | any browser |
+| "The exploit works against realistic state" | `forge test` against an **anvil fork** of live chain state | any browser |
+| "The bug is visible on the protocol's frontend" | **Browserbase session replay** driving the testnet frontend (screenshot/replay as evidence artifact) | — |
+| "The submission page renders / contest state is X" | Browserbase fetch/browsers | — |
+
+Browserbase is the **web interaction layer**, not a compute sandbox: it cannot
+compile or run Solidity. Its agentic value is (a) ingest of JS-heavy contest
+pages, (b) recorded visual evidence of UI-exploitable bugs via Stagehand-driven
+sessions (Live View replays make the PoC *accessible* to non-technical judges),
+and (c) read-only platform monitoring. PoC execution proof always comes from
+the foundry container.
 
 ### The human's role (non-negotiable)
 

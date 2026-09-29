@@ -84,7 +84,7 @@ export const auditToolSpecs = [
   {
     name: "fetch_bounty",
     description:
-      "Ingest a contest/bounty page (scope, rules, prizes, timeline) via the Browserbase headless browser. Returns extracted text. Requires BROWSERBASE_API_KEY.",
+      "Web interaction layer via the Browserbase headless browser. Uses: (1) ingest contest/bounty pages (scope, rules, timeline); (2) capture visual PoC evidence — drive a testnet frontend with Stagehand and record the session replay as an evidence artifact for judges. NOTE: Browserbase is a browser, NOT a PoC execution engine — PoC proof always comes from forge_test.",
     parameters: z.object({ url: z.string().url() }),
     handler: async ({ url }: { url: string }) => {
       const key = process.env.BROWSERBASE_API_KEY;

@@ -31,7 +31,7 @@ calls, and click "submit" on any finding.
 | **Forge harness** | LLM key (Venice/OpenRouter/…) | The agent runtime: loop, approvals, workspaces, token accounting | Already built |
 | **HuggingFace** (`HF_TOKEN`) | free → pro | Dataset download (findings corpus), Inference Providers for open-weight models, trace datasets | Phase 1, 6 |
 | **huggingface.co/chat** | free | Manual spot-checks of model behavior while building evals | optional |
-| **Browserbase** | `BROWSERBASE_API_KEY` | Headless browsing of contest/bounty pages (JS-heavy) | `fetch_bounty` tool |
+| **Browserbase** | `BROWSERBASE_API_KEY` | Web interaction layer: contest/bounty page ingest, **visual PoC evidence** (session replays of testnet frontends), platform dashboards | `fetch_bounty` + `evidence_capture` tools. ⚠️ It is a browser — it CANNOT execute Foundry PoCs. PoC proof lives in the foundry container (forge test + anvil fork). |
 | **browser-use** (local) | none | Fallback + interactive verification of what pages render | dev tool |
 | **Akash** (CLI / Console) | funded wallet | Hosting the scanner/agent server; later, GPU via providers | deploy/ scripts from Forge |
 | **brev.dev** | funded account | GPU boxes for SFT fine-tuning (Phase 6 only) | do NOT start without human approval |
