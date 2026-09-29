@@ -33,6 +33,7 @@
 - Code in this repo: MIT.
 - `Zaevlad/audit-findings-dataset`: check the HF dataset card for license terms
   before any commercial use. Fine for personal research/RAG.
-- Public audit reports (e.g. your `public-audits` corpus, C4/Sherlock public
-  reports): index for personal research; don't republish others' reports in a
-  product.
+- Public audit reports (`Frankcastleauditor/public-audits` is a third-party
+  reference — NOT authored by this project; C4/Sherlock public reports, etc.):
+  index for personal research with attribution. Don't republish others' reports
+  in a product. Don't imply authorship of any third-party finding.

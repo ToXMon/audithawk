@@ -40,7 +40,7 @@ findings from real audits.
 ```bash
 cd ml
 python ingest_dataset.py          # pulls Zaevlad/audit-findings-dataset from HF
-python ingest_reports.py /path/to/public-audits/reports/*.pdf   # your own corpus
+python ingest_reports.py /path/to/public-audits/reports/*.pdf   # third-party reference corpus
 python build_index.py             # BM25 index (works offline, zero GPU)
 python search_findings.py "execution fee hard-coded USDC decimals"   # try it
 ```
@@ -49,9 +49,12 @@ python search_findings.py "execution fee hard-coded USDC decimals"   # try it
   `{title, description, poc_code, fix, severity, quality, contest}`.
 - Quality filter: entries carry a quality score — index only the top 60% for
   retrieval; keep all of it for eval.
-- Your own `public-audits/reports/` PDFs get text-extracted (pypdf) and indexed
-  under a `source: personal` tag — this is the corpus that makes the agent
-  *yours*.
+- Third-party references — `Frankcastleauditor/public-audits` reports and any
+  other public audit reports — get text-extracted (pypdf) and indexed under a
+  `source: reference` tag with attribution. These are research references, NOT
+  your findings; never represent them as personal track record. The corpus that
+  makes the agent *yours* is built from your own accepted submissions over
+  time.
 - Upgrade path (Phase 6): swap BM25 → embeddings (open-weight embedder via
   the same multi-provider routing), then SFT.
 
