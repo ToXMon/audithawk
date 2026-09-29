@@ -17,7 +17,11 @@ cp .env.example .env   # fill FORGE_API_KEY (Venice/OpenRouter/etc.) — cheap o
 git clone https://github.com/ToXMon/audithawk && cd ../audithawk
 
 # 3. Solidity toolchain — inside Docker, never bare-metal (untrusted code!)
-docker pull ghcr.io/foundry-rs/foundry:latest
+# Cyfrin maintains ready-made web3 devcontainers (foundry, moccasin, lair, suimove, claude):
+git clone https://github.com/Cyfrin/web3-dev-containers.git ../web3-dev-containers
+# Build the foundry container from there (preferred over raw foundry images —
+# Cyfrin keeps toolchains pinned and tested):
+docker build -t audithawk/foundry ../web3-dev-containers/foundry
 docker pull trailofit/slither  # or build from infra/
 
 # 4. Python for the knowledge base
@@ -41,6 +45,9 @@ findings from real audits.
 cd ml
 python ingest_dataset.py          # pulls Zaevlad/audit-findings-dataset from HF
 python ingest_reports.py /path/to/public-audits/reports/*.pdf   # third-party reference corpus
+# Cyfrin's public reports ship as MARKDOWN (reports_md/) — direct ingest, no PDF extraction:
+git clone https://github.com/Cyfrin/cyfrin-audit-reports.git ../cyfrin-audit-reports
+python ingest_reports.py ../cyfrin-audit-reports/reports_md/*.md   # tagged source: reference
 python build_index.py             # BM25 index (works offline, zero GPU)
 python search_findings.py "execution fee hard-coded USDC decimals"   # try it
 ```

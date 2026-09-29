@@ -43,9 +43,13 @@ export function audithawkAgent(): AgentDefinition {
     name: "audithawk",
     systemPrompt: SYSTEM_PROMPT,
     contextDocs: [
-      // Mounted into context every step; keep these tight.
+      // Mounted into context every step; keep these tight — load checklist
+      // categories relevant to the scope, not all 370 items (skill's own rule).
       "docs/severity-matrices.md", // per-platform severity rules
       "docs/scoping-checklist.md",
+      // farrellh1/smart-contract-auditor-skill — 370-item checklist, 13
+      // categories, distilled from Cyfrin/audit-checklist (Solodit). Vendored:
+      "references/checklist/INDEX.md", // load per-category files on demand
     ],
   };
 }

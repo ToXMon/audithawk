@@ -16,6 +16,7 @@ Tick with `[x]`, note the commit hash.
 - [ ] `python ml/build_index.py` builds `ml/data/index.pkl`
 - [ ] `python ml/search_findings.py --query "hard-coded fee assumes USDC decimals" --k 3` returns ≥1 relevant hit
 - [ ] `python ml/ingest_reports.py <path-to-public-audits>/reports/*.pdf` indexes reference corpus (tagged `source: reference`)
+- [ ] Clone Cyfrin/cyfrin-audit-reports; ingest `reports_md/*.md` (markdown corpus, tagged `source: reference` + attribution)
 **Verify:** `bash evals/verify/m2.sh`
 
 ## M3 — Sandboxes + first PoC (proof loop)
