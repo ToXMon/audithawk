@@ -1,0 +1,21 @@
+# AuditHawk sandboxes. All agent-executed code runs here, never on the host.
+# Hardening path: gVisor (runsc runtime) → Firecracker before multi-tenant use.
+services:
+  foundry:
+    image: ghcr.io/foundry-rs/foundry:latest
+    entrypoint: ["sleep", "infinity"]
+    working_dir: /workdir
+    volumes:
+      - ../workspaces:/workdir
+    # No ports: PoCs are local tests; pin RPC explicitly per-contest if needed.
+    security_opt:
+      - no-new-privileges:true
+    read_only: false
+
+  slither:
+    image: trailofit/slither
+    entrypoint: ["sleep", "infinity"]
+    volumes:
+      - ../workspaces:/share:ro
+    security_opt:
+      - no-new-privileges:true

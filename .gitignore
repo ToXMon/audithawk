@@ -1,0 +1,8 @@
+.venv/
+__pycache__/
+data/
+workspaces/
+*.pkl
+.env
+node_modules/
+.DS_Store
